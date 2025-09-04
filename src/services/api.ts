@@ -189,6 +189,12 @@ class ApiService {
     return response.data;
   }
 
+  // 获取最近的通知
+  async getRecentNotifications(limit: number = 50): Promise<any> {
+    const response = await this.client.get(`/notifications/recent?limit=${limit}`);
+    return response.data;
+  }
+
   // 设置认证token
   setAuthToken(token: string): void {
     localStorage.setItem('access_token', token);

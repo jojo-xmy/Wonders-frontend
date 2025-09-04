@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { flushSync } from 'react-dom';
 import { User, LoginRequest, UseAuthReturn } from '../types';
 import { apiService } from '../services/api';
 import toast from 'react-hot-toast';
@@ -55,25 +56,26 @@ export const useAuth = (): UseAuthReturn => {
       // 保存用户信息到localStorage
       localStorage.setItem('user', JSON.stringify(userData));
       
-      // 立即更新状态，确保组件重新渲染
-      setUser(userData);
-      setIsAuthenticated(true);
+      // 使用React的flushSync确保状态立即更新
+      // 这样可以避免需要手动刷新页面的问题
+      flushSync(() => {
+        setUser(userData);
+        setIsAuthenticated(true);
+        setIsLoading(false); // 提前设置loading为false
+      });
       
-      // 使用setTimeout确保状态更新后再显示成功消息
-      setTimeout(() => {
-        if (request.anonymous) {
-          toast.success('匿名登录成功！');
-        } else {
-          toast.success('登录成功！');
-        }
-      }, 0);
+      // 显示成功消息
+      if (request.anonymous) {
+        toast.success('匿名登录成功！');
+      } else {
+         toast.success('登录成功！');
+       }
       
     } catch (error: any) {
       console.error('登录失败:', error);
       toast.error(error.message || '登录失败，请重试');
-      throw error;
-    } finally {
       setIsLoading(false);
+      throw error;
     }
   }, []);
 
