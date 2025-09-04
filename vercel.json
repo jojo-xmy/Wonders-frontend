@@ -2,25 +2,28 @@
   "version": 2,
   "builds": [
     {
-      "src": "vite.config.ts",
+      "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "dist"
+        "distDir": "build"
       }
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "/dist/$1"
+      "handle": "filesystem"
+    },
+    {
+      "src": "/.*",
+      "dest": "/index.html"
     }
   ],
   "env": {
-    "VITE_API_URL": "https://wonders-backend.herokuapp.com"
+    "REACT_APP_API_BASE_URL": "https://wonders-backend.herokuapp.com/api"
   },
   "build": {
     "env": {
-      "VITE_API_URL": "https://wonders-backend.herokuapp.com"
+      "REACT_APP_API_BASE_URL": "https://wonders-backend.herokuapp.com/api"
     }
   }
 }
